@@ -1,0 +1,186 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+header {
+    padding: 10px 0;
+    background: url('imagenes/base_index.png') no-repeat center center fixed;
+    background-size: cover;
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+.img {
+    height: 10px;
+}
+h1 {
+    margin: 0;
+    color: white;
+}
+.container {
+    display: flex;
+}
+.main-section {
+    flex: 1;
+    margin: 10px;
+}
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.asiento-form {
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 400px;
+}
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+.form-group label {
+    margin-right: 10px;
+    font-weight: bold;
+    width: 100px; /* Ajusta este valor según sea necesario */
+}
+.form-group input[type="text"], .form-group input[type="date"], .form-group input[type="number"] {
+    flex: 1;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+.buttons button {
+    background-color: #5fc6dc;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.buttons button:hover {
+    background-color: #4eb3cb;
+}
+.buttons .cancel {
+    background-color: #4eb3cb;
+}
+.buttons .cancel:hover {
+    background-color: #4eb3cb;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+table thead th {
+    background-color: #5fc6dc;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+table button {
+    background-color: #9e9e9e;
+    border: none;
+    outline:none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+table button:hover{
+    background-color: #5fc6dc;
+    border: none;
+}
+.toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-group {
+    display: flex;
+}
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.toggle-container input[type="radio"] {
+    display: none;
+}
+.toggle-container label {
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.toggle-container label .icon {
+    display: inline-block;
+    padding: 5px;
+    border-radius: 50%;
+}
+.toggle-container input[type="radio"]:checked + label {
+    background-color: #a8dadc; /* Fondo cuando está seleccionado */
+    color: #000;
+}
+.toggle-container input[type="radio"]:not(:checked) + label {
+    background-color: #457b9d; /* Fondo cuando no está seleccionado */
+    color: #fff;
+}
+.toggle-container input[type="radio"]:checked + label .icon {
+    background-color: #a8dadc; /* Icono cuando está seleccionado */
+}
+.toggle-container input[type="radio"]:not(:checked) + label .icon {
+    background-color: #1d3557; /* Icono cuando no está seleccionado */
+}
+.toggle-container img{
+    cursor:pointer;
+    margin-left: 5px;
+}
+#LibroDiarioEntrada {
+    position: absolute;
+    top: 80%; /* Ajusta este valor según necesites que aparezca justo debajo del botón */
+    left: 31.5%;
+    width: 400px; /* Asegúrate de que el ancho del formulario sea consistente */
+    z-index: 100; /* Para asegurarte de que aparezca sobre el formulario principal */
+    display: none; /* Para que esté inicialmente oculto */
+    background-color:white ; /* Fondo blanco para que se vea claro */
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
