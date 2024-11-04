@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+header {
+    padding: 10px 0;
+    background: url('imagenes/base_index.png') no-repeat center center fixed;
+    background-size: cover;
+}
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+.img {
+    height: 10px;
+}
+h1 {
+    margin: 0;
+    color: white;
+}
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+label{
+    color: #5c5c5c;
+}
+.plan-de-cuenta-form {
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width:auto;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    margin-right: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    width:100%;
+}
+.form-group input[type="text"] {
+    width:100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-group .radio-group {
+    display: flex;
+    flex-direction: column;
+}
+.form-group .radio-group label {
+    font-weight: normal;
+}
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+.buttons button {
+    background-color: #5fc6dc;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 4px;
+}
+.buttons button:hover {
+    background-color: #4eb3cb;
+}
+
+.buttons .cancel:hover {
+    background-color: #3a9fb1;
+}

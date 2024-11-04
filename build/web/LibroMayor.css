@@ -1,0 +1,130 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    padding: 10px 0;
+    background: url('imagenes/base_index.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+h2 {
+    color: #4a4a4a;
+    text-align: left;
+}
+
+
+.search-form {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    color: #5c5c5c;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    width:100%;
+}
+
+.input-group input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.search-btn {
+    background-color: #5fc6dc;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.search-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+table thead th {
+    background-color: #5fc6dc;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-size: 14px;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.saldo-section {
+    display: flex;
+    justify-content: flex-end; /* Alinea el contenido al final (derecha) */
+    gap: 10px;
+    margin-top: 20px;
+    align-items: center;
+}
+.saldo-section span {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    display: inline-block;
+    min-width: 100px; /* Esto define un tamaño mínimo para la caja */
+    text-align: right; /* Alinea el texto a la derecha */
+}
+footer {
+    padding: 20px 0;
+    background: url('imagenes/base_index.png') no-repeat center center fixed;
+    background-size: cover;
+    text-align: right;
+    
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

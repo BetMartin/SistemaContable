@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/META-INF/persistence.xml</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/DAO/AsientoDAO.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/index.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/DAO/HibernateUtil.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/persistencia/hibernate.cfg.xml</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/DAO/PlanCuentaDAO.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioAsiento.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Modelo/Entrada.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioAsiento.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/estiloIndex.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/PlanCuentaControlador.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/EntradaControlador.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioPpal.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaIngreso.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroMayor.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaPpal.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaIngreso.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/exito.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/DAO/EntradaDAO.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/conf/persistence.xml</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaPpal.css</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Modelo/Asiento.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/imagenes/planCuentas-list.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroMayor.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/META-INF/context.xml</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Modelo/PlanCuenta.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioPpal.jsp</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/AsientoControlador.java</file>
+        </group>
+    </open-files>
+</project-private>
