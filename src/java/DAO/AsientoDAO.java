@@ -1,62 +1,82 @@
 package DAO;
 
 import Modelo.Asiento;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class AsientoDAO {
-    
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("ContabilidadPU");
+
     public void saveAsiento(Asiento asiento) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.save(asiento);
-            transaction.commit();
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(asiento);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public Asiento getAsientoById(int idAsiento) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Asiento.class, idAsiento);
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(Asiento.class, idAsiento);
+        } finally {
+            em.close();
         }
     }
 
     public List<Asiento> getAllAsientos() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Asiento> query = session.createQuery("from Asiento", Asiento.class);
-            return query.list();
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Asiento> query = em.createQuery("SELECT a FROM Asiento a", Asiento.class);
+            return query.getResultList();
+        } finally {
+            em.close();
         }
     }
 
     public void updateAsiento(Asiento asiento) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.update(asiento);
-            transaction.commit();
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(asiento);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public void deleteAsiento(int idAsiento) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            Asiento asiento = session.get(Asiento.class, idAsiento);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Asiento asiento = em.find(Asiento.class, idAsiento);
             if (asiento != null) {
-                session.delete(asiento);
+                em.remove(asiento);
             }
-            transaction.commit();
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 }
