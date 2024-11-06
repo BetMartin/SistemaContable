@@ -63,10 +63,18 @@ public class PlanCuentaControlador extends HttpServlet {
     }
 
     private void deletePlanCuenta(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int nroCuenta = Integer.parseInt(request.getParameter("nroCuenta"));
-        planCuentaDAO.deletePlanCuenta(nroCuenta);
-        response.sendRedirect("PlanCuentaControlador");
+        try {
+            int nroCuenta = Integer.parseInt(request.getParameter("nroCuenta"));
+            planCuentaDAO.deletePlanCuenta(nroCuenta);
+
+            // Redirigir al controlador para recargar la lista de cuentas
+            listPlanCuentas(request, response); // Reload the list of accounts after deletion
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("PlanCuentaControlador?action=list");
+        }
     }
+
 
     private void searchPlanCuenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchValue = request.getParameter("search");
@@ -101,7 +109,8 @@ public class PlanCuentaControlador extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         PlanCuenta newPlanCuenta = new PlanCuenta(rubro, descripcion);
         planCuentaDAO.savePlanCuenta(newPlanCuenta);
-        response.sendRedirect("PlanCuentaControlador");
+        response.setContentType("text/html");
+        response.getWriter().write("<script type='text/javascript'>window.close();</script>");
     }
 
     private void updatePlanCuenta(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -110,6 +119,7 @@ public class PlanCuentaControlador extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         PlanCuenta updatedPlanCuenta = new PlanCuenta(nroCuenta, rubro, descripcion);
         planCuentaDAO.updatePlanCuenta(updatedPlanCuenta);
-        response.sendRedirect("PlanCuentaControlador");
+        response.setContentType("text/html");
+        response.getWriter().write("<script type='text/javascript'>window.close();</script>");
     }
 }
