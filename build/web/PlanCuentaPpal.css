@@ -1,8 +1,9 @@
 /* General Styles */
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f1f1f1;
-    margin: 0;
+    margin: 10px;
     padding: 0;
 }
 
@@ -10,7 +11,7 @@ header {
     padding: 10px 0;
     background: url('imagenes/base_index.png') no-repeat center center fixed;
     background-size: cover;
-
+    
 }
 
 .header-content {
@@ -25,32 +26,13 @@ header {
     cursor: pointer;
 }
 
-h1 {
-    margin: 0;
-}
-
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-}
-
-.plan-de-cuenta {
-    background-color: white;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    width: 80%;
-    max-width: 800px;
-}
-
 h2 {
     color: #5c5c5c;
     font-size: 1.5rem;
     margin-bottom: 20px;
 }
 
+/* Search Bar */
 .search-bar {
     display: flex;
     justify-content: flex-end;
@@ -78,25 +60,42 @@ h2 {
     color: white;
 }
 
+/* Table Container */
+
 table {
     width: 100%;
     border-collapse: collapse;
+    background-color: white;
     margin-bottom: 20px;
 }
 
-table thead {
+table thead th {
     background-color: #5fc6dc;
     color: white;
-}
-
-table th, table td {
-    padding: 10px;
+    padding: 12px;
     text-align: left;
-    border: 1px solid #ccc;
+    font-size: 14px;
 }
 
-tbody tr:nth-child(even) {
+table tbody td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-size: 14px;
+}
+
+table tbody tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+
+table tr:hover {
+    cursor: pointer; /* Puntero de manita */
+    background-color: #f9f9f9;; /* Cambiar el color de fondo cuando se pasa el mouse */
+    font-weight: bold; /* Hacer el texto en negrita */
+}
+
+.selected {
+    background-color: #5fc6dc; /* Color de fondo para la fila seleccionada */
 }
 
 /* Buttons */
@@ -119,33 +118,18 @@ button:hover {
     background-color: #4eb3cb;
 }
 
-button.alta {
-    background-color: #5fc6dc;
-}
-
-button.baja {
-    background-color: #5fc6dc;
-}
-
-button.modificar {
-    background-color: #5fc6dc;
-}
-
-button.baja:hover {
-    background-color: #9e9e9e;
-}
-button.alta:hover {
-    background-color: #9e9e9e;
-}
+button.alta:hover,
+button.baja:hover,
 button.modificar:hover {
     background-color: #9e9e9e;
 }
+
+/* Footer */
 footer {
     padding: 20px 0;
     background: url('imagenes/base_index.png') no-repeat center center fixed;
     background-size: cover;
     text-align: right;
-    
     position: fixed;
     bottom: 0;
     width: 100%;

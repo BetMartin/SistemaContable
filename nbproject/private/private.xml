@@ -14,6 +14,7 @@
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioAsiento.css</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/estiloIndex.css</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/PlanCuentaControlador.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/resorces/hibernate.cfg.xml</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/EntradaControlador.java</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioPpal.css</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaIngreso.css</file>
@@ -23,6 +24,7 @@
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/exito.jsp</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/DAO/EntradaDAO.java</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/conf/persistence.xml</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/build.xml</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/PlanCuentaPpal.css</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Modelo/Asiento.java</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/imagenes/planCuentas-list.jsp</file>
@@ -31,6 +33,7 @@
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Modelo/PlanCuenta.java</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/web/LibroDiarioPpal.jsp</file>
             <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/java/Controllers/AsientoControlador.java</file>
+            <file>file:/C:/Users/betsa/Documents/UTN-TUP/2do%20año/Org.%20Contable%20de%20Emp/Trabajo%20Final_Martin/SistemaContable_Martin/src/conf/MANIFEST.MF</file>
         </group>
     </open-files>
 </project-private>
