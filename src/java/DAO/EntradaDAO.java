@@ -1,62 +1,82 @@
 package DAO;
 
 import Modelo.Entrada;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class EntradaDAO {
-    
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("ContabilidadPU");
+
     public void saveEntrada(Entrada entrada) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.save(entrada);
-            transaction.commit();
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(entrada);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public Entrada getEntradaById(int nroEntrada) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Entrada.class, nroEntrada);
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.find(Entrada.class, nroEntrada);
+        } finally {
+            em.close();
         }
     }
 
     public List<Entrada> getAllEntradas() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Entrada> query = session.createQuery("from Entrada", Entrada.class);
-            return query.list();
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Entrada> query = em.createQuery("SELECT e FROM Entrada e", Entrada.class);
+            return query.getResultList();
+        } finally {
+            em.close();
         }
     }
 
     public void updateEntrada(Entrada entrada) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.update(entrada);
-            transaction.commit();
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(entrada);
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     public void deleteEntrada(int nroEntrada) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            Entrada entrada = session.get(Entrada.class, nroEntrada);
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Entrada entrada = em.find(Entrada.class, nroEntrada);
             if (entrada != null) {
-                session.delete(entrada);
+                em.remove(entrada);
             }
-            transaction.commit();
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 }
