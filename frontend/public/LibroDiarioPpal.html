@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libro Diario</title>
+    <link rel="stylesheet" href="./styles/LibroDiarioPpal.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarAsientosDetallados();
+
+            document.getElementById('searchForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const fecha = document.getElementById('fecha').value;
+                if (fecha) {
+                    const formattedDate = new Date(fecha).toISOString().split('T')[0]; // Formato "yyyy-mm-dd"
+                    await cargarAsientosPorFecha(formattedDate);
+                } else {
+                    cargarAsientosDetallados();
+                }
+                document.getElementById('fecha').value = ''; // Limpiar el campo de búsqueda
+            });
+
+            document.getElementById('reload-btn').addEventListener('click', () => {
+                cargarAsientosDetallados();
+            });
+        });
+
+        async function cargarAsientosDetallados() {
+            const response = await fetch(`http://localhost:3000/api/asientos/listarDetallados${fecha ? `?fecha=${fecha}` : ''}`);
+            const asientos = await response.json();
+            const asientosBody = document.getElementById('asientosBody');
+            asientosBody.innerHTML = ''; // Limpiar la tabla
+            asientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            asientos.forEach(asiento => {
+                const numEntradas = asiento.entradas.length;
+                asiento.entradas.forEach((entrada, index) => {
+                    const row = document.createElement('tr');
+
+                    if (index === 0) {
+                        const nroCell = document.createElement('td');
+                        nroCell.rowSpan = numEntradas;
+                        nroCell.textContent = asiento.id;
+                        row.appendChild(nroCell);
+
+                        const fechaCell = document.createElement('td');
+                        fechaCell.rowSpan = numEntradas;
+                        fechaCell.textContent = new Date(asiento.fecha).toLocaleDateString();
+                        row.appendChild(fechaCell);
+                    }
+
+                    const cuentaCell = document.createElement('td');
+                    cuentaCell.textContent = `${entrada.cuenta.subRubro.rubro.id}.${entrada.cuenta.subRubro.nroSubRubro}.${entrada.cuenta.nroCuenta} - ${entrada.cuenta.denominacion}`;
+                    row.appendChild(cuentaCell);
+
+                    const conceptoCell = document.createElement('td');
+                    conceptoCell.textContent = entrada.descripcion;
+                    row.appendChild(conceptoCell);
+
+                    const debeCell = document.createElement('td');
+                    debeCell.textContent = entrada.tipoPartida === 'DEBE' ? entrada.monto : '';
+                    row.appendChild(debeCell);
+
+                    const haberCell = document.createElement('td');
+                    haberCell.textContent = entrada.tipoPartida === 'HABER' ? entrada.monto : '';
+                    row.appendChild(haberCell);
+
+                    asientosBody.appendChild(row);
+                });
+            });
+        }
+        async function cargarAsientosPorFecha(fecha) {
+            const response = await fetch(`http://localhost:3000/api/asientos/listarPorFecha/${fecha}`);
+            const asientos = await response.json();
+            const asientosBody = document.getElementById('asientosBody');
+            asientosBody.innerHTML = ''; // Limpiar la tabla
+
+            if (asientos.length === 0) {
+                const noResultsRow = document.createElement('tr');
+                const noResultsCell = document.createElement('td');
+                noResultsCell.colSpan = 6;
+                noResultsCell.textContent = 'No se han registrado movimientos en la fecha dada';
+                noResultsRow.appendChild(noResultsCell);
+                asientosBody.appendChild(noResultsRow);
+                return;
+            }
+            asientos.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            asientos.forEach(asiento => {
+                const numEntradas = asiento.entradas.length;
+                asiento.entradas.forEach((entrada, index) => {
+                    const row = document.createElement('tr');
+
+                    if (index === 0) {
+                        const nroCell = document.createElement('td');
+                        nroCell.rowSpan = numEntradas;
+                        nroCell.textContent = asiento.id;
+                        row.appendChild(nroCell);
+
+                        const fechaCell = document.createElement('td');
+                        fechaCell.rowSpan = numEntradas;
+                        fechaCell.textContent = new Date(asiento.fecha).toLocaleDateString();
+                        row.appendChild(fechaCell);
+                    }
+
+                    const cuentaCell = document.createElement('td');
+                    cuentaCell.textContent = `${entrada.cuenta.subRubro.rubro.id}.${entrada.cuenta.subRubro.nroSubRubro}.${entrada.cuenta.nroCuenta} - ${entrada.cuenta.denominacion}`;
+                    row.appendChild(cuentaCell);
+
+                    const conceptoCell = document.createElement('td');
+                    conceptoCell.textContent = entrada.descripcion;
+                    row.appendChild(conceptoCell);
+
+                    const debeCell = document.createElement('td');
+                    debeCell.textContent = entrada.tipoPartida === 'DEBE' ? entrada.monto : '';
+                    row.appendChild(debeCell);
+
+                    const haberCell = document.createElement('td');
+                    haberCell.textContent = entrada.tipoPartida === 'HABER' ? entrada.monto : '';
+                    row.appendChild(haberCell);
+
+                    asientosBody.appendChild(row);
+                });
+            });
+        }
+
+        function abrirVentanaEmergente() {
+            const url = 'LibroDiarioAsiento.html';
+            const ancho = 600;
+            const alto = 400;
+            const izquierda = (screen.width - ancho) / 2;
+            const arriba = (screen.height - alto) / 2;
+            window.open(url, 'popup', `width=${ancho},height=${alto},top=${arriba},left=${izquierda}`);
+        }
+    </script>
+</head>
+<body>
+    <div class="header-content">
+        <a href="index.html">
+            <img src="images/logoSistemaContable.png" alt="Logo2">
+        </a>
+    </div>
+    <!-- Barra de búsqueda -->
+    <h2>Libro Diario</h2>
+    <form id="searchForm">
+        <div class="search-bar">
+            <input type="date" id="fecha" name="fecha">
+            <button type="submit" name="action" class="search-btn">
+                <img src="images/buscar.png" height="20px" alt="Buscar">
+            </button>
+            <button type="button" id="reload-btn" class="search-btn">
+                <img src="images/recargar.png" height="20px" alt="Recargar">
+            </button>
+        </div>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nro</th>
+                <th>Fecha</th>
+                <th>Cuenta</th>
+                <th>Concepto</th>
+                <th>Debe</th>
+                <th>Haber</th>
+            </tr>
+        </thead>
+        <tbody id="asientosBody">
+            <!-- Las filas se insertarán aquí -->
+        </tbody>
+    </table>
+    <div class="actions">
+        <button class="alta" onclick="abrirVentanaEmergente()">
+            <img src="images/alta.png" height="20px" alt="Alta"> Registrar Movimiento
+        </button>
+    </div>
+</body>
+</html>

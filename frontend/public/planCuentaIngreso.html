@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso de Plan de Cuenta</title>
+    <link rel="stylesheet" href="styles/PlanCuentaIngreso.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Plan de Cuenta</h1>
+        </div>
+    </header>
+    <form id="formCuenta">
+        <label for="descripcion">Descripción:</label>
+        <input type="text" id="descripcion" name="descripcion" required>
+        <br><br>
+        <label for="rubro">Rubro:</label>
+        <select id="rubro" name="rubro" required>
+            <option value="">Seleccione un rubro</option>
+        </select>
+        <br><br>
+        <label for="subrubro">SubRubro:</label>
+        <select id="subrubro" name="subrubro" required>
+            <option value="">Seleccione un Subrubro</option>
+        </select>
+        <br><br>
+        <button type="submit">
+            <img src="images/alta.png" height="20px" alt="Guardar"> Guardar
+        </button>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Cargar rubros
+            const rubroSelect = document.getElementById('rubro');
+            const responseRubros = await fetch('http://localhost:3000/api/rubros/listar');
+            const rubros = await responseRubros.json();
+            rubros.forEach(rubro => {
+                const option = document.createElement('option');
+                option.value = rubro.id;
+                option.textContent = rubro.denominacion;
+                rubroSelect.appendChild(option);
+            });
+
+            // Cargar subrubros cuando se selecciona un rubro
+            rubroSelect.addEventListener('change', async () => {
+                const subRubroSelect = document.getElementById('subrubro');
+                subRubroSelect.innerHTML = '<option value="">Seleccione un subrubro</option>'; // Limpiar subrubros anteriores
+                const rubroId = rubroSelect.value;
+                if (rubroId) {
+                    const responseSubRubros = await fetch(`http://localhost:3000/api/subrubros/listar/${rubroId}`);
+                    const subRubros = await responseSubRubros.json();
+                    subRubros.forEach(subRubro => {
+                        const option = document.createElement('option');
+                        option.value = subRubro.id;
+                        option.textContent = subRubro.denominacion;
+                        subRubroSelect.appendChild(option);
+                    });
+                }
+            });
+        });
+
+        document.getElementById('formCuenta').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const idSubRubro = parseInt(document.getElementById('subrubro').value);
+            const descripcion = document.getElementById('descripcion').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/planCuentas/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ denominacion: descripcion, subrubro: idSubRubro})
+                });
+
+                if (response.ok) {
+                    alert("Plan de cuenta guardado con éxito.");
+                    window.opener.location.reload(); // Recargar la página principal
+                    window.close();
+                } else {
+                    const error = await response.json();
+                    alert("Plan de cuenta no ingresado.");
+                }
+            } catch (error) {
+                alert("Error al procesar la solicitud.");
+            }
+        });
+        
+    </script>
+</body>
+</html>

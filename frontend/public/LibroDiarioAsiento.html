@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asiento</title>
+    <link rel="stylesheet" href="styles/LibroDiarioAsiento.css">
+    <script>
+        async function cargarPlanCuentas() {
+            try {
+                const response = await fetch('http://localhost:3000/api/rubros/listarDetallada');
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+
+                const rubros = await response.json();
+                const selectCuenta = document.getElementById("nro-cuenta");
+
+                // Limpiar el select antes de llenarlo
+                selectCuenta.innerHTML = `<option value="" disabled selected>Seleccione una cuenta</option>`;
+
+                rubros.forEach(rubro => {
+                    const idRubro = rubro.id;
+
+                    rubro.subRubros.forEach(subRubro => {
+                        const nroSubRubro = subRubro.nroSubRubro;
+
+                        subRubro.cuentas.forEach(planCuenta => {
+                            const option = document.createElement("option");
+
+                            // Guardar el ID de planCuenta en el valor de la opción
+                            option.value = planCuenta.id;
+                            option.textContent = `${idRubro}.${nroSubRubro}.${planCuenta.nroCuenta} - ${planCuenta.denominacion}`;
+                            selectCuenta.appendChild(option);
+                        });
+                    });
+                });
+            } catch (error) {
+                console.error("Error al cargar las cuentas:", error);
+            }
+        }
+        function agregarFila() {
+            const nroCuentaSelect = document.getElementById("nro-cuenta");
+            const nroCuentaText = nroCuentaSelect.options[nroCuentaSelect.selectedIndex].text;
+            const nroCuentaId = nroCuentaSelect.value; // Aquí se obtiene el ID de planCuenta
+            const descripcion = document.getElementById("descripcion").value;
+            const monto = document.getElementById("monto").value;
+            const tipoMovimiento = document.querySelector('input[name="tipo-movimiento"]:checked').value;
+
+            if (!nroCuentaId || !descripcion || !monto || !tipoMovimiento) {
+                alert("Por favor, completa todos los campos antes de agregar.");
+                return;
+            }
+
+            const tableBody = document.querySelector("table tbody");
+            const nuevaFila = document.createElement("tr");
+
+            nuevaFila.innerHTML = `
+                <td data-id="${nroCuentaId}">${nroCuentaText}</td>
+                <td>${descripcion}</td>
+                <td>${monto}</td>
+                <td>${tipoMovimiento}</td>
+                <td>
+                    <button type="button" onclick="eliminarFila(this)">-</button>
+                </td>
+            `;
+
+            tableBody.appendChild(nuevaFila);
+
+            // Limpiar los campos del formulario
+            document.getElementById("descripcion").value = "";
+            document.getElementById("monto").value = "";
+            document.getElementById("sube").checked = true;
+
+            ocultarLibroDiarioEntrada();
+        }
+
+
+
+        function mostrarLibroDiarioEntrada() {
+            cargarPlanCuentas(); // Cargar cuentas cada vez que se abra el formulario
+            const libroDiarioEntradaDiv = document.getElementById("LibroDiarioEntrada");
+            libroDiarioEntradaDiv.style.display = "block";
+        }
+
+        function ocultarLibroDiarioEntrada() {
+            const libroDiarioEntradaDiv = document.getElementById("LibroDiarioEntrada");
+            libroDiarioEntradaDiv.style.display = "none";
+        }
+
+        function agregarFila() {
+            const nroCuentaSelect = document.getElementById("nro-cuenta");
+            const nroCuentaText = nroCuentaSelect.options[nroCuentaSelect.selectedIndex]?.text || "";
+            const nroCuentaId = nroCuentaSelect.value; // Aquí se obtiene el ID de planCuenta
+            const descripcion = document.getElementById("descripcion").value;
+            const monto = parseFloat(document.getElementById("monto").value); // Convertir a número
+            const tipoMovimiento = document.querySelector('input[name="tipo-movimiento"]:checked').value;
+
+            // Validaciones
+            if (!nroCuentaId) {
+                alert("Por favor, seleccione una cuenta.");
+                return;
+            }
+
+            if (!descripcion.trim()) {
+                alert("Por favor, ingrese una descripción.");
+                return;
+            }
+
+            if (isNaN(monto) || monto <= 0) {
+                alert("El monto debe ser un número mayor a 0.");
+                return;
+            }
+
+            if (!tipoMovimiento) {
+                alert("Por favor, seleccione el tipo de movimiento (Sube o Baja).");
+                return;
+            }
+
+            const tableBody = document.querySelector("table tbody");
+            const nuevaFila = document.createElement("tr");
+
+            nuevaFila.innerHTML = `
+                <td data-id="${nroCuentaId}">${nroCuentaText}</td>
+                <td>${descripcion}</td>
+                <td>${monto.toFixed(2)}</td>
+                <td>${tipoMovimiento}</td>
+                <td>
+                    <button type="button" onclick="eliminarFila(this)">-</button>
+                </td>
+            `;
+
+            tableBody.appendChild(nuevaFila);
+
+            // Limpiar los campos del formulario
+            document.getElementById("descripcion").value = "";
+            document.getElementById("monto").value = "";
+            document.getElementById("sube").checked = true;
+
+            ocultarLibroDiarioEntrada();
+        }
+
+
+        function eliminarFila(boton) {
+            const fila = boton.closest("tr");
+            fila.remove();
+        }
+
+        async function validarSaldo(idCuenta, monto) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/entradas/saldo?cuenta=${idCuenta}`);
+                if (!response.ok) {
+                    throw new Error("Error al obtener el saldo de la cuenta.");
+                }
+                const { saldo } = await response.json();
+
+                if (monto > saldo) {
+                    alert(`Saldo insuficiente. El saldo actual de la cuenta es ${saldo.toFixed(2)}.`);
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error("Error al validar el saldo:", error);
+                alert("Error al validar el saldo. Inténtelo nuevamente.");
+                return false;
+            }
+        }
+
+        async function registrarMovimiento() {
+            const idCuenta = document.getElementById("cuenta").value;
+            const descripcion = document.getElementById("descripcion").value;
+            const monto = parseFloat(document.getElementById("monto").value);
+            const tipoEntrada = document.querySelector('input[name="tipoMovimiento"]:checked').value; // 1 para "sube", 2 para "baja"
+            const cuentaText = cells[0]?.textContent.trim();
+
+            if (!idCuenta || !descripcion || isNaN(monto) || !tipoEntrada) {
+                alert("Todos los campos son obligatorios.");
+                return;
+            }
+
+            // Enviar solicitud para registrar el movimiento
+            try {
+                const response = await fetch("http://localhost:3000/api/entradas/registrar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ idCuenta, descripcion, monto, tipoEntrada }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Error al registrar el movimiento.");
+                }
+
+                alert("Movimiento registrado exitosamente.");
+                location.reload(); // Recargar la página
+            } catch (error) {
+                console.error("Error al registrar el movimiento:", error);
+                alert("Error al registrar el movimiento. Inténtelo nuevamente.");
+            }
+        }
+
+
+        async function darDeAlta() {
+            const fecha = document.getElementById("fecha").value; // Obtener la fecha seleccionada
+            const tablaMovimientos = document.querySelectorAll("#tablaResultados tr");
+
+            if (!fecha) {
+                alert("Por favor, ingrese una fecha.");
+                return;
+            }
+
+            if (tablaMovimientos.length === 0) {
+                alert("No hay movimientos para guardar.");
+                return;
+            }
+
+            try {
+                // Fecha inicial simulada para pruebas
+                const fechaAsientoInicial = new Date("2024-06-01T00:00:00.000Z");
+
+                if (new Date(fecha) < fechaAsientoInicial) {
+                    alert(`La fecha no puede ser anterior a ${fechaAsientoInicial.toLocaleDateString()}.`);
+                    return;
+                }
+            } catch (error) {
+                console.error("Error al validar la fecha del asiento inicial:", error);
+                alert("Error al validar la fecha del asiento inicial. Inténtelo nuevamente.");
+                return;
+            }
+
+
+
+            let totalDebe = 0;
+            let totalHaber = 0;
+            const movimientos = [];
+
+            for (const row of tablaMovimientos) {
+                const cells = row.querySelectorAll("td");
+
+                if (cells.length > 0) {
+                    const cuenta = cells[0]?.getAttribute("data-id"); // ID de la cuenta almacenado como atributo
+                    const descripcion = cells[1]?.textContent.trim();
+                    const monto = parseFloat(cells[2]?.textContent.trim());
+                    const tipoMovimiento = cells[3]?.textContent.trim().toLowerCase();
+                    const cuentaText = cells[0]?.textContent.trim();
+
+                    if (!cuenta || !descripcion || isNaN(monto) || !tipoMovimiento) {
+                        alert("Existen movimientos con datos incompletos. Verifique las filas de la tabla.");
+                        return;
+                    }
+
+                    try {
+                        // Calcular el saldo actual de la cuenta
+                        const responseSaldo = await fetch(`http://localhost:3000/api/entradas/saldo?cuenta=${cuenta}`);
+                        const { saldo } = await responseSaldo.json();
+
+                        // Validar el saldo si el tipo de movimiento es "baja"
+                        if (tipoMovimiento === "baja" && monto > saldo && cuentaText.startsWith('1')) {
+                            alert(
+                                `El monto de la "baja" (${monto.toFixed(
+                                    2
+                                )}) no puede ser mayor al saldo actual de la cuenta (${saldo.toFixed(2)}).`
+                            );
+                            return;
+                        }
+                    } catch (error) {
+                        console.error(`Error al calcular el saldo de la cuenta ${cuenta}:`, error);
+                        alert("Error al validar el saldo de una cuenta. Inténtelo nuevamente.");
+                        return;
+                    }
+
+                    // Calcular totales de debe y haber
+                    if (cuentaText.startsWith('1') || cuentaText.startsWith('5')) {
+                        if (tipoMovimiento === 'sube') {
+                            totalDebe += monto;
+                        } else if (tipoMovimiento === 'baja') {
+                            totalHaber += monto;
+                        }
+                    } else if (cuentaText.startsWith('2') || cuentaText.startsWith('3') || cuentaText.startsWith('4')) {
+                        if (tipoMovimiento === 'baja') {
+                            totalDebe += monto;
+                        } else if (tipoMovimiento === 'sube') {
+                            totalHaber += monto;
+                        }
+                    }
+
+
+                    movimientos.push({
+                        idCuenta: parseInt(cuenta, 10),
+                        descripcion: descripcion,
+                        monto: monto,
+                        tipoEntrada: tipoMovimiento === "sube" ? 1 : 2, // 1 para "sube", 2 para "baja"
+                    });
+                }
+            }
+
+            // Validar que el DEBE y el HABER estén equilibrados
+            if (totalDebe !== totalHaber) {
+                alert(
+                    `El asiento no está equilibrado. El total DEBE (${totalDebe.toFixed(
+                        2
+                    )}) debe ser igual al total HABER (${totalHaber.toFixed(2)}).`
+                );
+                return;
+            }
+
+            // Crear el objeto que se enviará al servidor
+            const data = {
+                fecha: fecha,
+                movimientos: movimientos,
+            };
+
+            try {
+                const response = await fetch("http://localhost:3000/api/asientos/guardar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error al guardar: ${response.status}`);
+                }
+
+                alert("Datos guardados correctamente.");
+                location.reload(); // Recargar la página para limpiar los datos
+            } catch (error) {
+                console.error("Error al guardar los datos:", error);
+                alert("Error al guardar los datos. Por favor, inténtelo de nuevo más tarde.");
+            }
+        }
+
+
+
+    </script>
+</head>
+
+<body>
+  
+    <div class="container">
+        <main class="main-section">
+            <form class="asiento-form">
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" id="fecha" name="fecha">
+                </div>
+                <!-- Tabla -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cuenta</th>
+                            <th>Descripción</th>
+                            <th>Monto</th>
+                            <th>Tipo de Movimiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaResultados">
+                        <!-- Las filas dinámicas se agregarán aquí -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" style="text-align: right;">
+                                <button type="button" onclick="mostrarLibroDiarioEntrada()">
+                                    <img src="images/add.png" height="10px" alt="Alta"> Agregar
+                                </button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="buttons">
+                    <button type="button" class="submit" onclick="darDeAlta()">
+                        <img src="images/alta.png" height="20px" alt="Alta"> Dar de Alta
+                    </button><br>
+                    <button type="reset" class="cancel" onclick="window.close()">
+                        <img src="images/cancelar.png" height="20px" alt="Cancelar"> Cancelar
+                    </button>
+                </div>
+                <div id="LibroDiarioEntrada" style="display: none;">
+                    <div class="form-group">
+                        <label for="nro-cuenta">Nro. Cuenta:</label>
+                        <select id="nro-cuenta" name="nro-cuenta">
+                            <option value="" disabled selected>Cargando cuentas...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción:</label>
+                        <input type="text" id="descripcion" name="descripcion">
+                    </div>
+                    <div class="form-group">
+                        <label for="monto">Monto:</label>
+                        <input type="text" id="monto" name="monto">
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Movimiento:</label>
+                        <input type="radio" id="sube" name="tipo-movimiento" value="Sube" checked>
+                        <label for="sube">Sube</label>
+                        <input type="radio" id="baja" name="tipo-movimiento" value="Baja">
+                        <label for="baja">Baja</label>
+                    </div>
+                    <div class="buttons">
+                        <button type="button" onclick="agregarFila()">Agregar +</button>
+                        <button type="reset" onclick="ocultarLibroDiarioEntrada()">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+
+</html>

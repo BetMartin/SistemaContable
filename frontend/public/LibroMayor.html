@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libro Mayor</title>
+    <link rel="stylesheet" href="./styles/LibroMayor.css">
+    <script>
+        // Función para cargar las cuentas desde la API
+        async function cargarCuentas() {
+            try {
+                const response = await fetch('http://localhost:3000/api/rubros/listarDetallada');
+                if (!response.ok) {
+                    throw new Error(`Error al obtener las cuentas: ${response.status}`);
+                }
+
+                const rubros = await response.json();
+                const selectCuenta = document.getElementById('cuenta');
+
+                // Limpiar el select antes de llenarlo
+                selectCuenta.innerHTML = `<option value="" disabled selected>Seleccione una cuenta</option>`;
+
+                rubros.forEach(rubro => {
+                    rubro.subRubros.forEach(subRubro => {
+                        subRubro.cuentas.forEach(planCuenta => {
+                            const option = document.createElement('option');
+                            option.value = planCuenta.id; // Guardar el ID de la cuenta como valor
+                            option.textContent = `${rubro.id}.${subRubro.nroSubRubro}.${planCuenta.nroCuenta} - ${planCuenta.denominacion}`;
+                            selectCuenta.appendChild(option);
+                        });
+                    });
+                });
+            } catch (error) {
+                console.error('Error al cargar las cuentas:', error);
+                alert('Error al cargar las cuentas. Por favor, inténtelo de nuevo más tarde.');
+            }
+        }
+
+        // Cargar las cuentas al cargar la página
+        document.addEventListener('DOMContentLoaded', cargarCuentas);
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html">
+                <img src="images/logoSistemaContable.png" alt="Logo3">
+            </a>
+        </div>
+    </header>
+    <div class="container">
+        <h2>Libro Mayor</h2>
+        <!-- Formulario de búsqueda -->
+        <form id="formBusqueda" method="get" class="search-form">
+            <div class="input-group">
+                <label for="cuenta">Nro. Cuenta:</label>
+                <select id="cuenta" name="cuenta" required>
+                    <!-- Las opciones se llenarán dinámicamente -->
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="mes">Periodo:</label>
+                <input type="month" id="mes" name="mes" required>
+            </div>
+            <button type="button" class="search-btn" onclick="cargarMovimientos()">
+                <img src="images/buscar.png" height="20px" alt="Buscar">
+            </button>
+        </form>
+        <!-- Tabla de información -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Descripción</th>
+                    <th>DEBE</th>
+                    <th>HABER</th>
+                </tr>
+            </thead>
+            <tbody id="tablaResultados">
+                <!-- Los datos dinámicos se cargarán desde el servidor -->
+            </tbody>
+        </table>
+        <!-- Sección de saldo -->
+        <div class="saldo-section">
+            <label for="saldo">SALDO</label>
+            <span id="saldo"></span>
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 Betsabé Martin/Laura Pelayes
+    </footer>
+    <script>
+        // Función para procesar la búsqueda
+        /*async function procesarBusqueda() {
+            const cuentaId = document.getElementById('cuenta').value;
+            const mes = document.getElementById('mes').value;
+    
+            if (!cuentaId || !mes) {
+                alert('Por favor, seleccione una cuenta y un período.');
+                return;
+            }
+    
+            try {
+                // Solicitar datos de la API con los parámetros de filtro
+                const response = await fetch(`/api/libroMayor/buscar?cuenta=${cuentaId}&mes=${mes}`);
+                if (!response.ok) {
+                    throw new Error(`Error al buscar en el Libro Mayor: ${response.status}`);
+                }
+    
+                // Obtener los datos de la respuesta
+                const resultados = await response.json();
+                const tablaResultados = document.getElementById('tablaResultados');
+    
+                // Limpiar la tabla antes de agregar los resultados
+                tablaResultados.innerHTML = '';
+    
+                // Recorrer los movimientos y llenar la tabla
+                resultados.movimientos.forEach(movimiento => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${movimiento.descripcion}</td>
+                        <td>${movimiento.debe || ''}</td>
+                        <td>${movimiento.haber || ''}</td>
+                    `;
+                    tablaResultados.appendChild(fila);
+                });
+    
+                // Actualizar el saldo final
+                document.getElementById('saldo').textContent = resultados.saldo;
+            } catch (error) {
+                console.error('Error al buscar en el Libro Mayor:', error);
+                alert('Error al realizar la búsqueda. Por favor, inténtelo de nuevo más tarde.');
+            }
+        }
+
+        */
+        async function cargarMovimientos() {
+            // Obtener los valores seleccionados del formulario
+            const cuentaId = document.getElementById('cuenta').value;
+            const mes = document.getElementById('mes').value;
+        
+            if (!cuentaId || !mes) {
+                alert('Por favor, seleccione una cuenta y un período.');
+                return;
+            }
+        
+            try {
+                // Llamar a la API con los parámetros de cuenta y mes
+                const response = await fetch(`http://localhost:3000/api/entradas/buscar?cuenta=${cuentaId}&mes=${mes}`);
+                const data = await response.json();
+        
+                // Obtener referencias al tbody de la tabla y al saldo
+                const tablaMovimientos = document.getElementById('tablaResultados');
+                const saldoElement = document.getElementById('saldo');
+        
+                // Limpiar la tabla antes de agregar nuevos registros
+                tablaMovimientos.innerHTML = '';
+        
+                // Recorrer los movimientos y agregarlos a la tabla
+                data.movimientos.forEach(movimiento => {
+                    const row = document.createElement('tr');
+        
+                    // Columna de descripción
+                    const descripcionCell = document.createElement('td');
+                    descripcionCell.textContent = movimiento.descripcion;
+                    row.appendChild(descripcionCell);
+        
+                    // Columna DEBE
+                    const debeCell = document.createElement('td');
+                    debeCell.textContent = movimiento.tipoEntrada === 'sube' ? movimiento.monto : ''; // Validación de DEBE
+                    row.appendChild(debeCell);
+        
+                    // Columna HABER
+                    const haberCell = document.createElement('td');
+                    haberCell.textContent = movimiento.tipoEntrada === 'baja' ? movimiento.monto : ''; // Validación de HABER
+                    row.appendChild(haberCell);
+        
+                    // Agregar la fila a la tabla
+                    tablaMovimientos.appendChild(row);
+                });
+        
+                // Actualizar el saldo
+// Actualizar el saldo
+if (typeof data.saldo === "number") {
+    saldoElement.textContent = data.saldo.toFixed(2); // Mostrar saldo con 2 decimales
+} else {
+    saldoElement.textContent = "0.00"; // Valor predeterminado en caso de datos incorrectos
+}
+            } catch (error) {
+                console.error('Error al cargar los movimientos:', error);
+                alert('Error al cargar los movimientos. Por favor, inténtelo de nuevo más tarde.');
+            }
+        }
+        
+        // Agregar un evento al botón de búsqueda
+        document.querySelector('.search-btn').addEventListener('click', cargarMovimientos);
+        
+
+    </script>
+    
+</body>
+</html>

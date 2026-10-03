@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Cuenta Principal</title>
+    <link rel="stylesheet" href="styles/PlanCuentaPpal.css">
+    <script>
+        async function fetchRubrosDetallada() {
+            const response = await fetch('http://localhost:3000/api/rubros/listarDetallada');
+            return await response.json();
+        }
+
+        async function buscarPlanCuentasPorValor(valor) {
+            const response = await fetch(`http://localhost:3000/api/plancuentas/buscarPorValor/${valor}`);
+            return await response.json();
+        }
+
+        async function eliminarPlanCuenta(id) {
+            const response = await fetch(`http://localhost:3000/api/plancuentas/eliminar/${id}`, {
+                method: 'DELETE'
+            });
+            return await response.json();
+        }
+        function cargarTablaConRubrosDetallada() {
+            const planCuentaBody = document.getElementById('planCuentaBody');
+            planCuentaBody.innerHTML = ''; // Limpiar la tabla
+            fetchRubrosDetallada().then(rubros => {
+                rubros.forEach(rubro => {
+                    const rubroRow = document.createElement('tr');
+                    rubroRow.classList.add('rubro-row');
+                    rubroRow.dataset.rubroId = rubro.id;
+                    rubroRow.innerHTML = `
+                        <td colspan="4">${rubro.id} - ${rubro.denominacion}</td>
+                    `;
+                    rubroRow.addEventListener('click', () => toggleSubRubros(rubroRow, rubro.subRubros),togglePlanCuentas(rubroRow, rubro.cuentas));
+                    planCuentaBody.appendChild(rubroRow);
+                });
+            });
+        }
+
+        function toggleSubRubros(row, subRubros) {
+            const subRubroRows = document.querySelectorAll(`.subrubro-row[data-rubro-id="${row.dataset.rubroId}"]`);
+            if (subRubroRows.length > 0) {
+                subRubroRows.forEach(subRubroRow => {
+                    const planCuentaRows = document.querySelectorAll(`.plancuenta-row[data-subrubro-id="${subRubroRow.dataset.subrubroId}"]`);
+                    planCuentaRows.forEach(planCuentaRow => planCuentaRow.remove());
+                    subRubroRow.remove();
+                });
+            } else {
+                subRubros.sort((a, b) => b.nroSubRubro - a.nroSubRubro); // Orden ascendente
+                subRubros.forEach(subRubro => {
+                    const subRubroRow = document.createElement('tr');
+                    subRubroRow.classList.add('subrubro-row');
+                    subRubroRow.dataset.rubroId = row.dataset.rubroId;
+                    subRubroRow.dataset.subrubroId = subRubro.id;
+                    subRubroRow.innerHTML = `
+                        <td colspan="4">${row.dataset.rubroId}.${subRubro.nroSubRubro} - ${subRubro.denominacion}</td>
+                    `;
+                    subRubroRow.addEventListener('click', () => togglePlanCuentas(subRubroRow, subRubro.cuentas, row.dataset.rubroId, subRubro.nroSubRubro));
+                    row.parentNode.insertBefore(subRubroRow, row.nextSibling);
+                });
+            }
+        }
+
+        function togglePlanCuentas(row, planCuentas, idRubro, nroSubRubro) {
+            const planCuentaRows = document.querySelectorAll(`.plancuenta-row[data-subrubro-id="${row.dataset.subrubroId}"]`);
+            if (planCuentaRows.length > 0) {
+                planCuentaRows.forEach(row => row.remove());
+            } else {
+                planCuentas.sort((a, b) => b.nroCuenta - a.nroCuenta);
+
+                planCuentas.forEach(planCuenta => {
+                    const planCuentaRow = document.createElement('tr');
+                    planCuentaRow.classList.add('plancuenta-row');
+                    planCuentaRow.dataset.subrubroId = row.dataset.subrubroId;
+                    planCuentaRow.dataset.id = planCuenta.id; // Añadir el ID del planCuenta para la eliminación
+                    planCuentaRow.innerHTML = `
+                        <td colspan="4">${idRubro}.${nroSubRubro}.${planCuenta.nroCuenta}-${planCuenta.denominacion}</td>
+                    `;
+                    planCuentaRow.addEventListener('click', () => seleccionarFila(planCuentaRow));
+                    row.parentNode.insertBefore(planCuentaRow, row.nextSibling);
+                });
+            }
+        }
+
+        function cargarTablaConRubrosDetallada() {
+            const planCuentaBody = document.getElementById('planCuentaBody');
+            planCuentaBody.innerHTML = ''; // Limpiar la tabla
+            fetchRubrosDetallada().then(rubros => {
+                rubros.forEach(rubro => {
+                    const rubroRow = document.createElement('tr');
+                    rubroRow.classList.add('rubro-row');
+                    rubroRow.dataset.rubroId = rubro.id;
+                    rubroRow.innerHTML = `
+                        <td colspan="4">${rubro.id} - ${rubro.denominacion}</td>
+                    `;
+                    rubroRow.addEventListener('click', () => toggleSubRubros(rubroRow, rubro.subRubros));
+                    planCuentaBody.appendChild(rubroRow);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarTablaConRubrosDetallada();
+
+            document.getElementById('search-btn').addEventListener('click', async () => {
+                const searchValue = document.getElementById('search').value;
+                if (!searchValue) {
+                    alert('Ingrese el valor que desea buscar');
+                    return;
+                }
+                const planCuentas = await buscarPlanCuentasPorValor(searchValue);
+                const planCuentaBody = document.getElementById('planCuentaBody');
+                planCuentaBody.innerHTML = ''; // Limpiar la tabla
+                if (planCuentas.length === 0) {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.innerHTML = `
+                        <td colspan="4">No existen cuentas coincidentes con el valor ingresado</td>
+                    `;
+                    planCuentaBody.appendChild(noResultsRow);
+                } else {
+                    planCuentas.forEach(planCuenta => {
+                        const planCuentaRow = document.createElement('tr');
+                        planCuentaRow.classList.add('plancuenta-row');
+                        planCuentaRow.dataset.id = planCuenta.id; // Añadir el ID del planCuenta para la eliminación
+                        if (planCuenta.subRubro && planCuenta.subRubro.rubro) {
+                            planCuentaRow.dataset.subrubroId = planCuenta.subRubro.id;
+                            planCuentaRow.innerHTML = `
+                                <td colspan="4">${planCuenta.subRubro.rubro.id}.${planCuenta.subRubro.nroSubRubro}.${planCuenta.nroCuenta} - ${planCuenta.denominacion}</td>
+                            `;
+                        } else {
+                            planCuentaRow.innerHTML = `
+                                <td colspan="4">${planCuenta.nroCuenta} - ${planCuenta.denominacion}</td>
+                            `;
+                        }
+                        planCuentaRow.addEventListener('click', () => seleccionarFila(planCuentaRow));
+                        planCuentaBody.appendChild(planCuentaRow);
+                    });
+                }
+                document.getElementById('search').value = ''; // Limpiar el campo de búsqueda
+
+            });
+
+            document.getElementById('reload-btn').addEventListener('click', () => {
+                cargarTablaConRubrosDetallada();
+            });
+
+            document.getElementById('delete-btn').addEventListener('click', async () => {
+                const selectedRow = document.querySelector('.plancuenta-row.selected');
+                if (selectedRow) {
+                    const id = selectedRow.dataset.id;
+                    const response = await eliminarPlanCuenta(id);
+                    if (response.mensaje === 'PlanCuenta eliminado exitosamente') {
+                        selectedRow.remove();
+                        alert('Cuenta eliminada exitosamente');
+                    } else {
+                        alert('La cuenta no puedo eliminarse. Cuenta Activa');
+                    }
+                } else {
+                    alert('Por favor, selecciona una cuenta.');
+                }
+            });
+        });
+
+        function seleccionarFila(row) {
+            if (!row.classList.contains('plancuenta-row')) {
+                return; // Solo permitir seleccionar filas de plan cuenta
+            }
+            const selectedRow = document.querySelector('.plancuenta-row.selected');
+            if (selectedRow) {
+                selectedRow.classList.remove('selected');
+            }
+            row.classList.add('selected');
+        }
+
+        async function eliminarFila(id) {
+            const response = await eliminarPlanCuenta(id);
+            if (response.mensaje === 'PlanCuenta eliminado exitosamente') {
+                document.querySelector(`.plancuenta-row[data-id="${id}"]`).remove();
+            } else {
+                alert(response.mensaje);
+            }
+        }
+
+        function abrirVentanaEmergente(action) {
+            let url = 'planCuentaIngreso.html';
+            var ancho = 500; // Ancho de la ventana emergente
+            var alto = 420; // Alto de la ventana emergente
+            var izquierda = (screen.width - ancho) / 2;
+            var arriba = (screen.height - alto) / 2;
+
+            window.open(url, 'popup', "width=" + ancho + ",height=" + alto + ",top=" + arriba + ",left=" + izquierda);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html">
+                <img src="./images/logoSistemaContable.png" alt="Logo">
+            </a>
+        </div>
+    </header>
+    <h2>Plan de Cuenta </h2>
+    <div class="search-bar">
+        <input type="text" id="search" name="search" placeholder="Consultar...">
+        <button type="button" id="search-btn" class="search-btn">
+            <img src="images/buscar.png" height="20px" alt="Buscar">
+        </button>
+        <button type="button" id="reload-btn" class="search-btn">
+            <img src="images/recargar.png" height="20px" alt="Recargar">
+        </button>
+    </div>
+    <table>
+        <tbody id="planCuentaBody">
+            <!-- Las filas se insertarán aquí -->
+        </tbody>
+    </table>
+    <form action="PlanCuentaControlador" method="GET">
+        <div class="buttons" style="width:50%; margin-left:25% ">
+            <button type="button" class="alta" onclick="abrirVentanaEmergente('save')">
+                <img src="./images/alta.png" height="20px" alt="Alta"> Alta
+            </button>
+            <button type="button" id="delete-btn" class="baja">
+                <img src="./images/baja.png" height="20px" alt="Baja"> Baja
+            </button>
+        </div>
+    </form>
+    <br><br><br><br><br>
+    <footer>
+        &copy; 2024 Betsabé Martin/Laura Pelayes
+    </footer>
+</body>
+</html>
